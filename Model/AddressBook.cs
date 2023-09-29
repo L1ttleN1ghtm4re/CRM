@@ -12,7 +12,47 @@ namespace CRM
         #region public methods
         public void AddContact(Contact contactToAdd)
         {
-            _contacts.Add(contactToAdd);
+            if (!DoesExist(contactToAdd))
+            {
+                _contacts.Add(contactToAdd);
+            }
+            else
+            {
+                throw new ContactAlreadyExist();
+            }
+        }
+
+        public void AddContacts(List<Contact> contactsToAdd)
+        {
+            foreach (Contact contactToAdd in contactsToAdd)
+            {
+                if (!DoesExist(contactToAdd))
+                {
+                    _contacts.Add(contactToAdd);
+                }
+                else
+                {
+                    throw new ContactAlreadyExist();
+                }
+            }
+        }
+
+        public bool DoesExist(Contact contactToCheck)
+        {
+            return _contacts.Contains(contactToCheck);
+        }
+
+        public void Remove(Contact contactToRemove)
+        {
+            if (DoesExist(contactToRemove))
+            {
+                _contacts.Remove(contactToRemove);
+            }
+            else
+            {
+                throw new RemoveFailedException();
+            }
+            
         }
 
         public List<Contact> Contacts
@@ -22,6 +62,11 @@ namespace CRM
                 return _contacts;
             }
         }
+
+        public class ContactAlreadyExist : Exception { };
+        public class ContactNotExist : Exception { };
+        public class RemoveFailedException : Exception { };
+
         #endregion public methods
     }
 }
